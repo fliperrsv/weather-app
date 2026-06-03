@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Weatherly — прогноз погоды с геолокацией</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="weather-card">
+    <h1>🌤️ Weatherly</h1>
+    <div class="sub">Погода в любом городе + автоматическое определение</div>
+
+    <div class="search-box">
+        <input type="text" id="cityInput" placeholder="Например, Москва, London, Tokyo" value="Санкт-Петербург">
+        <button id="searchBtn">🔍 Узнать</button>
+        <button id="locationBtn" class="location-btn">📍 Рядом со мной</button>
+    </div>
+
+    <div id="weatherContent" class="weather-info">
+        <!-- данные погоды появятся здесь -->
+    </div>
+    <footer>Данные: OpenWeatherMap | демо-проект для портфолио</footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
