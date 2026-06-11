@@ -2,25 +2,41 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Weatherly — прогноз погоды с геолокацией</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Weatherly 2.0 – умный прогноз погоды</title>
+    <meta name="description" content="Подробный прогноз погоды с картой, графиком, избранным и тёмной темой.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="weather-card">
-    <h1>🌤️ Weatherly</h1>
-    <div class="sub">Погода в любом городе + автоматическое определение</div>
-
-    <div class="search-box">
-        <input type="text" id="cityInput" placeholder="Например, Москва, London, Tokyo" value="Санкт-Петербург">
-        <button id="searchBtn">🔍 Узнать</button>
-        <button id="locationBtn" class="location-btn">📍 Рядом со мной</button>
+<div class="app-container">
+    <div class="header">
+        <div class="logo"><i class="fas fa-cloud-sun"></i> Weatherly 2.0</div>
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="cityInput" placeholder="Город, например Москва" value="Санкт-Петербург">
+                <button id="searchBtn"><i class="fas fa-search"></i> Найти</button>
+                <button id="locationBtn" class="icon-btn"><i class="fas fa-location-dot"></i> Рядом</button>
+            </div>
+            <button id="unitToggleBtn" class="icon-btn">°C / °F</button>
+            <button id="themeToggleBtn" class="icon-btn"><i class="fas fa-moon"></i></button>
+        </div>
     </div>
 
-    <div id="weatherContent" class="weather-info">
-        <!-- данные погоды появятся здесь -->
+    <div id="mainContent">
+        <div id="loader" class="loader" style="margin: 50px auto;"></div>
     </div>
-    <footer>Данные: OpenWeatherMap | демо-проект для портфолио</footer>
+
+    <div id="favoritesSection" class="favorites-section hidden">
+        <h3><i class="fas fa-star"></i> Избранные города</h3>
+        <div id="favList" class="fav-buttons"></div>
+    </div>
 </div>
 
 <script src="script.js"></script>
