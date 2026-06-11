@@ -7,7 +7,7 @@ let map = null;
 let favorites = JSON.parse(localStorage.getItem('weatherFavorites')) || [];
 
 // ========== API КЛЮЧ (ЗАМЕНИТЕ НА РЕАЛЬНЫЙ) ==========
-const API_KEY = 'd1f11da3a56ace24309a63a1b6b6055a';  // ВСТАВЬТЕ СВОЙ КЛЮЧ
+const API_KEY = '8f7fba4a0f054062a4a2d28ae7f5a142';  // ВСТАВЬТЕ СВОЙ КЛЮЧ
 
 // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 function showLoader() {
@@ -156,7 +156,7 @@ function addToFavorites() {
 }
 
 async function loadWeather() {
-    if (!API_KEY || API_KEY === 'YOUR_OPENWEATHER_API_KEY') {
+    if (!API_KEY || API_KEY === '8f7fba4a0f054062a4a2d28ae7f5a142') {
         document.getElementById('mainContent').innerHTML = '<div class="error-message">⚠️ Вставьте API-ключ OpenWeatherMap в код!</div>';
         return;
     }
