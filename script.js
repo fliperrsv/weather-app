@@ -7,7 +7,7 @@ let map = null;
 let favorites = JSON.parse(localStorage.getItem('weatherFavorites')) || [];
 
 // ========== API КЛЮЧ (ЗАМЕНИТЕ НА РЕАЛЬНЫЙ) ==========
-const API_KEY = '8f7fba4a0f054062a4a2d28ae7f5a142';  // ВСТАВЬТЕ СВОЙ КЛЮЧ
+const API_KEY = 'bd5e378503939ddaee76f12ad7a97608';  // ВСТАВЬТЕ СВОЙ КЛЮЧ
 
 // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 function showLoader() {
