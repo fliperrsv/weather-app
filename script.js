@@ -129,7 +129,11 @@ function updateUI(data, cityName) {
     // Карта
     if (map) map.remove();
     map = L.map('map').setView([current.coord.lat, current.coord.lon], 8);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB' }).addTo(map);
+    const isDark = document.documentElement.hasAttribute('data-theme');
+    const tileUrl = isDark
+        ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    L.tileLayer(tileUrl, { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
     L.marker([current.coord.lat, current.coord.lon]).addTo(map).bindPopup(displayName).openPopup();
 
     updateFavoritesUI();
