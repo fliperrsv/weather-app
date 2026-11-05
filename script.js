@@ -6,17 +6,23 @@ let chart = null;
 let map = null;
 let favorites = JSON.parse(localStorage.getItem('weatherFavorites')) || [];
 
-// ========== API КЛЮЧ (ЗАМЕНИТЕ НА РЕАЛЬНЫЙ) ==========
-const API_KEY = '8f7fba4a0f054062a4a2d28ae7f5a142';  // ВСТАВЬТЕ СВОЙ КЛЮЧ
+// ========== API КЛЮЧ ==========
+const API_KEY = '8f7fba4a0f054062a4a2d28ae7f5a142';
 
 // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 function showLoader() {
-    const content = document.getElementById('mainContent');
-    content.innerHTML = '<div id="loader" class="loader" style="margin: 50px auto;"></div>';
+    document.getElementById('mainContent').innerHTML = '<div id="loader" class="loader" style="margin: 50px auto;"></div>';
 }
 function hideLoader() {
     const loader = document.getElementById('loader');
     if (loader) loader.classList.add('hidden');
+}
+
+function humanizeError(status) {
+    if (status === 401) return 'Ошибка API-ключа — проверьте ключ OpenWeatherMap';
+    if (status === 404) return 'Город не найден. Попробуйте другой город';
+    if (status === 429) return 'Слишком много запросов. Попробуйте позже';
+    return 'Сервис погоды недоступен. Попробуйте позже';
 }
 
 async function fetchWeather(city, unit = currentTempUnit) {
@@ -24,15 +30,14 @@ async function fetchWeather(city, unit = currentTempUnit) {
     try {
         const currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=${unit}&lang=ru`;
         const currentRes = await fetch(currentUrl);
-        if (!currentRes.ok) throw new Error('Город не найден');
+        if (!currentRes.ok) throw new Error(humanizeError(currentRes.status));
         const currentData = await currentRes.json();
 
         const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=${unit}&lang=ru&cnt=40`;
         const forecastRes = await fetch(forecastUrl);
+        if (!forecastRes.ok) throw new Error(humanizeError(forecastRes.status));
         const forecastData = await forecastRes.json();
         return { current: currentData, forecast: forecastData };
-    } catch (err) {
-        throw err;
     } finally {
         hideLoader();
     }
@@ -47,6 +52,7 @@ function updateUI(data, cityName) {
     const description = current.weather[0].description;
     const iconCode = current.weather[0].icon;
     const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    const displayName = current.name || cityName;
 
     const mainHtml = `
         <div class="main-weather">
@@ -62,7 +68,7 @@ function updateUI(data, cityName) {
                     <div class="detail"><div class="detail-label">Ветер</div><div class="detail-value">${wind} км/ч</div></div>
                 </div>
             </div>
-            <div style="margin-top: 16px"><i class="fas fa-map-marker-alt"></i> ${current.name}, ${current.sys.country}</div>
+            <div style="margin-top: 16px"><i class="fas fa-map-marker-alt"></i> ${displayName}, ${current.sys.country}</div>
         </div>
     `;
 
@@ -124,7 +130,7 @@ function updateUI(data, cityName) {
     if (map) map.remove();
     map = L.map('map').setView([current.coord.lat, current.coord.lon], 8);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB' }).addTo(map);
-    L.marker([current.coord.lat, current.coord.lon]).addTo(map).bindPopup(`${current.name}`).openPopup();
+    L.marker([current.coord.lat, current.coord.lon]).addTo(map).bindPopup(displayName).openPopup();
 
     updateFavoritesUI();
 }
@@ -156,16 +162,12 @@ function addToFavorites() {
 }
 
 async function loadWeather() {
-    if (!API_KEY || API_KEY === '8f7fba4a0f054062a4a2d28ae7f5a142') {
-        document.getElementById('mainContent').innerHTML = '<div class="error-message">⚠️ Вставьте API-ключ OpenWeatherMap в код!</div>';
-        return;
-    }
     try {
         const data = await fetchWeather(currentCity, currentTempUnit);
         currentWeatherData = data;
         updateUI(data, currentCity);
     } catch (err) {
-        document.getElementById('mainContent').innerHTML = `<div class="error-message">❌ ${err.message}. Попробуйте другой город.</div>`;
+        document.getElementById('mainContent').innerHTML = `<div class="error-message">❌ ${err.message || 'Не удалось загрузить погоду'}</div>`;
     }
 }
 
@@ -195,8 +197,9 @@ function getLocation() {
         try {
             const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=${currentTempUnit}&lang=ru`;
             const res = await fetch(url);
+            if (!res.ok) throw new Error();
             const data = await res.json();
-            currentCity = data.name;
+            currentCity = data.name || 'Санкт-Петербург';
             document.getElementById('cityInput').value = currentCity;
             loadWeather();
         } catch (err) {
@@ -221,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('unitToggleBtn').addEventListener('click', toggleUnit);
     document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
 
-    // Добавляем кнопку «В избранное»
+    // Кнопка «В избранное»
     const favBtn = document.createElement('button');
     favBtn.innerHTML = '<i class="fas fa-heart"></i> В избранное';
     favBtn.className = 'icon-btn';
