@@ -356,5 +356,5 @@ canvas {
 }
 [data-theme="dark"] .weather-icon,
 [data-theme="dark"] .forecast-day img {
-    filter: invert(1) brightness(1.4);
+    filter: brightness(0) invert(1);
 }
