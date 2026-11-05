@@ -354,3 +354,7 @@ canvas {
     .forecast-grid { justify-content: flex-start; }
     #map { border-radius: 24px; height: 260px; }
 }
+[data-theme="dark"] .weather-icon,
+[data-theme="dark"] .forecast-day img {
+    filter: invert(1) brightness(1.4);
+}
